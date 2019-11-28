@@ -16,10 +16,21 @@ class User(db.Model):
     email = db.Column(db.String(100))
     password = db.Column(db.String(100))
     profile_picture = db.Column(db.String(100))
+    children = relationship("Tweet")
 
     # methode magique pour print()
     def __str__(self):
         return "{} | {}".format(self.username, self.mail)
+
+class Tweet(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(300))
+    user_id = Column(Integer, ForeignKey('user.id'))
+
+    # methode magique pour print()
+    def __str__(self):
+        return "{} | {}".format(self.content, self.user_id)
 
 SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
     username="arnaudadon",
