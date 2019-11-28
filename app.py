@@ -1,11 +1,46 @@
 from flask import Flask, request, render_template, redirect, url_for
 import csv , pycurl , json
+from flask_sqlalchemy import SQLAlchemy
 import settings
 
 app = Flask(__name__)
+app.config["DEBUG"] = True
 
-engine = create_engine('mysql+mysqlconnector://' + MYSQL_DATABASE_USER + ':' + MYSQL_DATABASE_PASSWORD + 
-	'@' + MYSQL_DATABASE_HOST + '/' + MYSQL_DATABASE_DB)
+db = SQLAlchemy(app)
+
+# Création d'une classe selon la syntaxe objet SQLAlchemy
+class User(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64))
+    email = db.Column(db.String(100))
+    password = db.Column(db.String(100))
+    profile_picture = db.Column(db.String(100))
+
+    # methode magique pour print()
+    def __str__(self):
+        return "{} | {}".format(self.username, self.mail)
+
+SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
+    username="arnaudadon",
+    password="&Password",
+    hostname="arnaudadon.mysql.eu.pythonanywhere-services.com",
+    databasename="arnaudadon$gazouille",
+)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.create_all()
+
+#engine = create_engine('mysql+mysqlconnector://arnaudadon:&Password@arnaudadon.mysql.eu.pythonanywhere-services.com/gazouille')
+#session = sessionmaker()
+#session.configure(bind=engine)
+#s = session()
+#Base.metadata.create_all(engine)
+
+#engine = create_engine('mysql+mysqlconnector://' + MYSQL_DATABASE_USER + ':' + MYSQL_DATABASE_PASSWORD +
+#	'@' + MYSQL_DATABASE_HOST + '/' + MYSQL_DATABASE_DB)
 
 session = sessionmaker()
 session.configure(bind=engine)
@@ -19,6 +54,7 @@ def home():
 def save_gazouille():
 	if request.method == 'POST':
 		print(request.form)
+		# send data to datatbase
 		dump_to_csv(request.form)
 		return redirect(url_for('timeline'))
 		#return "OK"
@@ -40,7 +76,7 @@ def timeline_csv_user(username):
 def timeline():
 	allTweet = getAllTweet()
 	return render_template("timeline.html", allTweet = allTweet)
-	
+
 
 def getAllTweet():
 	allTweet = []
@@ -68,16 +104,16 @@ def parse_from_csv_by_user(username):
 	with open('./gazouilles.csv', 'r') as f:
 		reader = csv.reader(f)
 		for row in reader:
-			if len(row[1] <= 280 & row[0] == 'username') 
+			if len(row[1] <= 280 & row[0] == 'username')
 				gaz.append({"user":row[0], "text":row[1]})
-	return gaz	
+	return gaz
 
 def parse_from_csv():
 	gaz = []
 	with open('./gazouilles.csv', 'r') as f:
 		reader = csv.reader(f)
 		for row in reader:
-			if len(row[1] <= 280) 
+			if len(row[1] <= 280)
 				gaz.append({"user":row[0], "text":row[1]})
 	return gaz
 
