@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		.gaz{
+			margin: 10px auto;
+			border:1px solid black;
+		}
+	</style>
+</head>
+<body>
+	{% for g in gaz %}
+	<div id="gazouille-{{loop.index}}" class="gaz">
+		<div>{{g.user}}</div>
+		<div>{{g.text}}</div>
+	</div>
+	{% endfor %}
+
+<a href="{{ url_for('save_gazouille') }}"> Ajouter un tweet </a>
+<a href="{{ url_for('home') }}"> Home </a>
+</body>
+</html>
