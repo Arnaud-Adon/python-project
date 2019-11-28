@@ -1,11 +1,12 @@
 from flask import Flask, request, render_template, redirect, url_for
 import csv , pycurl , json
+import settings
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return 'Bienvenue !'
+    return 'Bienvenue !' + MYSQL_DATABASE_USER
 
 @app.route('/gaz', methods=['GET','POST'])
 def save_gazouille():
