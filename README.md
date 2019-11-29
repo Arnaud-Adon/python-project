@@ -21,3 +21,6 @@ Python > 2.7
 
 - connexion a la base de donnée
 - beaucoup d'erreur lié à l'indentation
+
+# Plan de travail
+
