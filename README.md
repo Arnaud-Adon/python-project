@@ -24,3 +24,4 @@ Python > 2.7
 
 # Plan de travail
 
+On a initialement travailer à 2 sur un ordinateur hormis les premiers avec toutes les fonctionnalités que l'on a peaufiné par la suite
