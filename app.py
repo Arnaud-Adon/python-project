@@ -2,21 +2,19 @@ from flask import Flask, request, render_template, redirect, url_for
 import csv , pycurl , json
 from flask_sqlalchemy import SQLAlchemy
 import config
+import re
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-
-"""
-Création d'une classe selon la syntaxe objet SQLAlchemy
-"""
-
-
 
 """
 Instanciation de la base de donnée
 """
 db = SQLAlchemy(app)
 
+"""
+Création d'une classe Tweet selon la syntaxe objet SQLAlchemy
+"""
 class Tweet(db.Model):
     """
     Model Tweet
@@ -50,9 +48,16 @@ def addMessage(d):
     db.session.add(content)
     db.session.commit()
 
-#def getMessages():
-#    mesTweets = Tweet.query.all()
-#   return mesTweets
+@app.after_request
+def add_header(response):
+    """
+    Definition du header
+    """
+    response.cache_control.max_age = 300
+    response.headers['Access-Control-Allow-Origin'] = ['195.154.176.62','80.15.154.187']
+    return response
+
+
 
 @app.route('/')
 def home():
@@ -70,7 +75,7 @@ def save_gazouille():
     if request.method == 'POST':
         print(request.form)
         addMessage(request.form)
-        return redirect(url_for('timeline_csv'))
+        return redirect(url_for('timeline'))
         #return "OK"
     if request.method == 'GET':
         return render_template('formulaire.html')
@@ -139,7 +144,7 @@ def getAllTweet():
     tweetFiltered = []
     allTweet = Tweet.query.all()
     for tweet in allTweet:
-        if(len(tweet.message) <= 280):
+        if(len(tweet.message) <= 280 and len(tweet.message) > 0):
             tweetFiltered.append(tweet)
     return tweetFiltered
 
@@ -159,6 +164,6 @@ def getTweetByUser(username):
     tweetFiltered = []
     allTweetByUser = Tweet.query.filter(Tweet.username==username)
     for tweetByUser in allTweetByUser:
-        if(len(tweetByUser.message) <= 280):
+        if(len(tweetByUser.message) <= 280 and len(tweetByUser.message) > 0):
             tweetFiltered.append(tweetByUser)
     return tweetFiltered
