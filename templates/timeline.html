@@ -10,10 +10,10 @@
 	</style>
 </head>
 <body>
-	{% for g in gaz %}
+	{% for tweet in allTweet %}
 	<div id="gazouille-{{loop.index}}" class="gaz">
-		<div>{{g.user}}</div>
-		<div>{{g.text}}</div>
+		<div>{{tweet.username}}</div>
+		<div>{{tweet.message}}</div>
 	</div>
 	{% endfor %}
 
